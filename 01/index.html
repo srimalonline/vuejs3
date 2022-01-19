@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,13 +11,14 @@
         [v-cloak] {
             display: none;
         }
-
+        
         input {
             margin: 10px;
             display: block;
         }
     </style>
 </head>
+
 <body>
     <div id="app" v-cloak>
         <login-form></login-form>
@@ -50,25 +52,31 @@
             template: `
                 <form  @submit.prevent="handleSubmit">
                     <h1>{{ title }}</h1>
-                    <custom-input type="email" v-model="email"/>
-                    <custom-input type="password" v-model="password"/>
-                    <button type="submit"> Login </button>
+                    <p v-for="inputs">{{ str }}</p>
+                    <custom-input  v-model="email" :modelValue="" :label="emailLabel"/>
+                    <custom-input  v-model="password" :label="passwordLabel"/>
+                    <button> Login </button>
                 </form>
-            `, 
+            `,
 
             components: ['custom-input'],
             data() {
                 return {
                     title: 'Login Form',
-                    email: '',
-                    password: '',
+                    inputs: [
+                        'email',
+                        'password',
+                        'name'
+                    ],
+                    email: 'Usename Here',
+                    password: 'dsfsdf',
                     emailLabel: 'Email',
                     passwordLabel: 'Password'
                 }
             },
             methods: {
-                handleSubmit(){
-                    console.log(this.email,this.password)
+                handleSubmit() {
+                    console.log(this.email, this.password)
                 }
             }
 
@@ -77,11 +85,29 @@
             template: `
                 <label>
                     {{ label }}
-                    <input type="text"/>
+                    <input type="text" v-model="inputValue"/>
                 </label>
-            `
-        } )
+            `,
+            props: ['label', 'modelValue'],
+            computed: {
+                inputValue: {
+                    get() {
+                        return this.modelValue
+                    },
+                    set(value) {
+                        console.log(value)
+                        this.$emit('update:modelValue', value)
+                    }
+                }
+            }
+            // data() {
+            //     return {
+            //         inputValue: ''
+            //     }
+            // }
+        })
         app.mount('#app')
     </script>
 </body>
+
 </html>
